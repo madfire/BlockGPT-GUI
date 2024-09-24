@@ -55,6 +55,12 @@ import makeymakeyIconURL from './makeymakey/makeymakey.png';
 import makeymakeyConnectionIconURL from './makeymakey/makeymakey-illustration.svg';
 import makeymakeyConnectionSmallIconURL from './makeymakey/makeymakey-small.svg';
 
+
+// add ecool device 2024-09-06 by Ran
+import ecoolIconURL from './ecool/ecool.png';
+import ecoolConnectionIconURL from './ecool/ecool-illustration.svg';
+import ecoolConnectionSmallIconURL from './ecool/ecool-small.svg';
+
 const deviceData = [
     /**
      * Unselect the deivce back to pure scratch mode
@@ -513,6 +519,43 @@ const deviceData = [
         programLanguage: ['block', 'c', 'cpp'],
         tags: ['arduino'],
         helpLink: 'https://makeymakey.com'
+    },
+
+    {
+        name: 'Ecool',
+        deviceId: 'ecool',
+        manufactor: 'Edutech',
+        //learnMore: 'https://makeymakey.com/',
+        type: DeviceType.microPython,
+        iconURL:ecoolIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="A K210 device with ESP32."
+                description="Description for the Ecool device"
+                id="gui.device.ecool.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        bluetoothRequired: false,
+        serialportRequired: true,
+        defaultBaudRate: '115200',
+        internetConnectionRequired: false,
+        launchPeripheralConnectionFlow: true,
+        useAutoScan: false,
+        connectionIconURL: ecoolConnectionIconURL,
+        connectionSmallIconURL: ecoolConnectionSmallIconURL,
+        connectingMessage: (
+            <FormattedMessage
+                defaultMessage="Connecting"
+                description="Message to help people connect to their device."
+                id="gui.device.ecool.connectingMessage"
+            />
+        ),
+        programMode: ['upload'],
+        programLanguage: ['block', 'microPython'],
+        tags: ['microPython'],
+        //helpLink: 'https://makeymakey.com'
     },
     /**
      * For those parent devices that exist in VM but are not displayed in GUI

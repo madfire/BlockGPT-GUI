@@ -49,7 +49,7 @@ const getProjectFilename = (curTitle, defaultTitle) => {
     if (!filenameTitle || filenameTitle.length === 0) {
         filenameTitle = defaultTitle;
     }
-    return `${filenameTitle.substring(0, 100)}.ob`;
+    return `${filenameTitle.substring(0, 100)}.bp3`;   // 修改文件后缀名为bp3
 };
 
 SB3Downloader.propTypes = {

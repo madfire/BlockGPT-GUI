@@ -94,10 +94,7 @@ import communityIcon from './icon--community.svg';
 import wikiIcon from './icon--wiki.svg';
 import fileIcon from './icon--file.svg';
 import editIcon from './icon--edit.svg';
-
-import openblockLogo from './openblock-logo.svg';
-import openblockLogoSmall from './openblock-logo-small.svg';
-
+import blockgptLogo from './blockgpt-logo.svg';
 import sharedMessages from '../../lib/shared-messages';
 
 import Switch from 'react-switch';
@@ -571,8 +568,8 @@ class MenuBar extends React.Component {
                                 [styles.clickable]: typeof this.props.onClickLogo !== 'undefined'
                             })}
                             draggable={false}
-                            src={this.state.isOverflow ? this.props.logoSmall : this.props.logo}
-                            onClick={this.props.onClickLogo}
+                            src={this.props.logo}
+                            // onClick={this.props.onClickLogo}
                         />
                     </div>
                     {(this.props.canChangeLanguage) && (<div
@@ -811,7 +808,7 @@ class MenuBar extends React.Component {
                         )}
                     </div>)}
                 <div className={styles.tailMenu}>
-                    <div
+                    {/* <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.community)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
                         onClick={this.handleClickOpenCommunity}
@@ -821,8 +818,8 @@ class MenuBar extends React.Component {
                             src={communityIcon}
                         />
                         {this.state.isOverflow ? null : <FormattedMessage {...ariaMessages.community} />}
-                    </div>
-                    <div
+                    </div> */}
+                    {/* <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.wiki)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
                         onClick={this.handleClickOpenWiki}
@@ -832,7 +829,7 @@ class MenuBar extends React.Component {
                             src={wikiIcon}
                         />
                         {this.state.isOverflow ? null : <FormattedMessage {...ariaMessages.wiki} />}
-                    </div>
+                    </div> */}
                     <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
@@ -844,7 +841,7 @@ class MenuBar extends React.Component {
                         />
                         {this.state.isOverflow ? null : <FormattedMessage {...ariaMessages.tutorials} />}
                     </div>
-                    <Divider className={classNames(styles.divider)} />
+                    {/* <Divider className={classNames(styles.divider)} /> */}
                     <div
                         className={classNames(styles.menuBarItem, styles.hoverable)}
                         onMouseUp={this.handleScreenshot}
@@ -856,8 +853,8 @@ class MenuBar extends React.Component {
                             src={screenshotIcon}
                         />
                     </div>
-                    <Divider className={classNames(styles.divider)} />
-                    <div
+                    {/* <Divider className={classNames(styles.divider)} /> */}
+                    {/* <div
                         className={classNames(styles.menuBarItem, this.props.isRealtimeMode &&
                             this.props.peripheralName ? styles.hoverable : styles.disabled)}
                         onMouseUp={this.props.isRealtimeMode && this.props.peripheralName ?
@@ -874,7 +871,7 @@ class MenuBar extends React.Component {
                             description="Button to upload the realtime firmware"
                             id="gui.menuBar.uploadFirmware"
                         />}
-                    </div>
+                    </div> */}
                     <Divider className={classNames(styles.divider)} />
                     <div className={classNames(styles.menuBarItem, styles.programModeGroup)}>
                         <FormattedMessage
@@ -983,7 +980,6 @@ MenuBar.propTypes = {
     locale: PropTypes.string.isRequired,
     loginMenuOpen: PropTypes.bool,
     logo: PropTypes.string,
-    logoSmall: PropTypes.string,
     onClickAbout: PropTypes.oneOfType([
         PropTypes.func, // button mode: call this callback when the About button is clicked
         PropTypes.arrayOf( // menu mode: list of items in the About menu
@@ -1052,8 +1048,7 @@ MenuBar.propTypes = {
 };
 
 MenuBar.defaultProps = {
-    logo: openblockLogo,
-    logoSmall: openblockLogoSmall,
+    logo: blockgptLogo,
     onShare: () => {}
 };
 

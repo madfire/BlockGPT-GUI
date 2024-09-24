@@ -1,22 +1,34 @@
-import React from 'react';
-import {FormattedMessage, intlShape} from 'react-intl';
+import React, { useState } from 'react';
+import { FormattedMessage, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import ScrollableFeed from 'react-scrollable-feed';
 
 import Box from '../box/box.jsx';
 import MenuBarMenu from '../menu-bar/menu-bar-menu.jsx';
-import {MenuItem, MenuSection} from '../menu/menu.jsx';
+import { MenuItem, MenuSection } from '../menu/menu.jsx';
 import styles from './hardware-console.css';
 import cleanIcon from './clean.svg';
 import settingIcon from './setting.svg';
 import pauseIcon from './pause.svg';
 import startIcon from './start.svg';
+import runIcon from './exec.svg'; // 运行图标
+import endIcon from './end.svg'; // 结束图标
+import { getLanguageFromDeviceType } from '../../lib/device'; // Import the function
 
+const DeviceType = {
+    Python: 'python', // Define or import DeviceType
+    // Other device types...
+};
+
+// 将 Uint8Array 转换为十六进制字符串
 const toHexForm = buffer => Array.prototype.map.call(buffer,
     x => x.toString(16).toUpperCase()).join(' ');
 
 const HardwareConsoleComponent = props => {
+    const [inputValue, setInputValue] = useState('');
+    const [isRunning, setIsRunning] = useState(false); // 管理运行状态
+
     const {
         baudrate,
         baudrateList,
@@ -34,19 +46,73 @@ const HardwareConsoleComponent = props => {
         onClickAutoScroll,
         onClickSend,
         onInputChange,
-        onKeyPress,
         onKeyDown,
         onRequestSerialportMenu,
         onSelectBaudrate,
         onSelectEol,
-        serialportMenuOpen
+        serialportMenuOpen,
+        deviceType,
+        codeEditorValue, // 添加这个 prop 2024-09-06
+        isCodeEditorLocked, // 添加这个 prop 2024-09-06
     } = props;
+
+    // Determine if the run/end icon should be displayed
+    const showRunEndIcon = getLanguageFromDeviceType(deviceType) === DeviceType.Python;
+
+    // 点击发送按钮时清空输入框
+    const handleSendClick = () => {
+        if (inputValue.trim() !== '') { // 确保输入不为空
+            onClickSend(inputValue);    // 传递输入框的值
+            setInputValue('');          // 清空输入框
+        }
+    };
+
+    // 监听键盘事件，检测是否按下 Enter 键
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') { // 或者使用 e.keyCode === 13
+            e.preventDefault(); // 阻止默认行为（例如换行）
+            handleSendClick();   // 触发发送逻辑
+        }
+    };
+
+    const handleRunEndClick = () => {
+        if (isRunning) {
+            // 处理“结束”逻辑 发送 Ctrl+C
+            // 执行结束操作
+            onClickSend("\x03"); // '\x04' 是 Ctrl+D 的 ASCII 表示 '\x03' 是 Ctrl+C 的 ASCII 表示
+            setIsRunning(false);
+        } else {
+            // 处理“运行”逻辑
+            const formattedCode = codeEditorValue;
+              // 发送 Ctrl+E 进入粘贴模式
+            onClickSend(""); // 发送空行
+            onClickSend("\x05"); // '\x05' 是 Ctrl+E 的 ASCII 表示
+            const lines = formattedCode.split('\r\n');
+            // 根据 isCodeEditorLocked 状态决定是否跳过第一行
+            const startLineIndex = isCodeEditorLocked ? 0 : 0;
+            // 从指定的行开始发送
+            lines.slice(startLineIndex).forEach(line => {
+                onClickSend(line);
+                console.log(line);
+            });
+
+            // 延迟 400ms 清空
+            setTimeout(() => {
+                onClickClean();
+            }, 400);
+            // 发送 Ctrl+D 退出粘贴模式
+           // 延迟 500ms 发送 Ctrl+D 退出粘贴模式
+            setTimeout(() => {
+                onClickSend("\x04"); // '\x04' 是 Ctrl+D 的 ASCII 表示
+            }, 450);
+            setIsRunning(true);
+        }
+    };
+
     return (
         <Box className={styles.hardwareConsoleWrapper}>
             <Box className={styles.consoleArray}>
-                <ScrollableFeed
-                    forceScroll={isAutoScroll}
-                >
+                <ScrollableFeed forceScroll={isAutoScroll}>
                     <span>
                         {isHexForm ? toHexForm(consoleArray) : new TextDecoder('utf-8').decode(consoleArray)}
                     </span>
@@ -72,16 +138,33 @@ const HardwareConsoleComponent = props => {
                     src={cleanIcon}
                 />
             </button>
+            {showRunEndIcon && (
+                <button
+                    className={classNames(styles.button, styles.runButton)} // 使用新的 class
+                    onClick={handleRunEndClick} // 切换功能
+                >
+                    <img
+                        alt={isRunning ? 'End' : 'Run'}
+                        className={classNames(styles.runIcon)}
+                        src={isRunning ? endIcon : runIcon}
+                    />
+                </button>
+            )}
             <Box className={styles.consoleMenuWarpper}>
                 <input
                     className={styles.consoleInput}
-                    onChange={onInputChange}
-                    onKeyPress={onKeyPress}
-                    onKeyDown={onKeyDown}
+                    value={inputValue} // 确保 input 的 value 绑定到 inputValue
+                    onChange={e => {
+                        setInputValue(e.target.value); // 更新状态
+                        if (onInputChange) {
+                            onInputChange(e);         // 调用父组件的回调
+                        }
+                    }}
+                    onKeyDown={handleKeyDown}
                 />
                 <button
                     className={classNames(styles.button, styles.sendButton)}
-                    onClick={onClickSend}
+                    onClick={handleSendClick} // 点击发送按钮后触发 handleSendClick
                 >
                     <FormattedMessage
                         defaultMessage="Send"
@@ -105,21 +188,17 @@ const HardwareConsoleComponent = props => {
                         menuClassName={styles.menu}
                         open={serialportMenuOpen}
                         place={'left'}
-                        directiron={'up'}
+                        direction={'up'} // 修正拼写错误
                         onRequestClose={onRequestSerialportMenu}
                     >
-                        <MenuSection >
-                            <MenuItem
-                                isRtl={props.isRtl}
-                            >
+                        <MenuSection>
+                            <MenuItem isRtl={props.isRtl}>
                                 <FormattedMessage
-                                    defaultMessage="Buadrate"
-                                    description="Serial buadrate."
-                                    id="gui.hardwareConsole.buadrate"
+                                    defaultMessage="Baudrate"
+                                    description="Serial baudrate."
+                                    id="gui.hardwareConsole.baudrate"
                                 />
-                                <select
-                                    onChange={onSelectBaudrate}
-                                >
+                                <select onChange={onSelectBaudrate}>
                                     {baudrateList.map(item => (
                                         <option
                                             key={item.key}
@@ -130,17 +209,13 @@ const HardwareConsoleComponent = props => {
                                     ))}
                                 </select>
                             </MenuItem>
-                            <MenuItem
-                                isRtl={props.isRtl}
-                            >
+                            <MenuItem isRtl={props.isRtl}>
                                 <FormattedMessage
                                     defaultMessage="End of line"
                                     description="End of line."
                                     id="gui.hardwareConsole.endOfLine"
                                 />
-                                <select
-                                    onChange={onSelectEol}
-                                >
+                                <select onChange={onSelectEol}>
                                     {eolList.map(item => (
                                         <option
                                             key={item.key}
@@ -152,7 +227,7 @@ const HardwareConsoleComponent = props => {
                                 </select>
                             </MenuItem>
                         </MenuSection>
-                        <MenuSection >
+                        <MenuSection>
                             <MenuItem
                                 onClick={onClickHexForm}
                                 isRtl={props.isRtl}
@@ -200,7 +275,8 @@ HardwareConsoleComponent.propTypes = {
         PropTypes.shape({
             key: PropTypes.string.isRequired,
             value: PropTypes.number.isRequired
-        })),
+        })
+    ),
     consoleArray: PropTypes.instanceOf(Uint8Array),
     eol: PropTypes.string.isRequired,
     eolList: PropTypes.arrayOf(
@@ -211,12 +287,14 @@ HardwareConsoleComponent.propTypes = {
                 description: PropTypes.string,
                 id: PropTypes.string.isRequired
             })
-        })),
+        })
+    ),
     intl: intlShape,
     isRtl: PropTypes.bool,
     isHexForm: PropTypes.bool.isRequired,
     isPause: PropTypes.bool.isRequired,
     isAutoScroll: PropTypes.bool.isRequired,
+    isRunning: PropTypes.bool.isRequired, // 添加这个 prop 2024-09-06
     onClickClean: PropTypes.func.isRequired,
     onClickPause: PropTypes.func.isRequired,
     onClickAutoScroll: PropTypes.func.isRequired,
@@ -224,12 +302,14 @@ HardwareConsoleComponent.propTypes = {
     onClickSend: PropTypes.func.isRequired,
     onClickSerialportMenu: PropTypes.func.isRequired,
     onInputChange: PropTypes.func.isRequired,
-    onKeyPress: PropTypes.func.isRequired,
     onKeyDown: PropTypes.func.isRequired,
+    onClickRun: PropTypes.func.isRequired, // 添加这个回调 2024-09-06
+    onClickEnd: PropTypes.func.isRequired, // 添加这个回调 2024-09-06
     onRequestSerialportMenu: PropTypes.func.isRequired,
     onSelectBaudrate: PropTypes.func.isRequired,
     onSelectEol: PropTypes.func.isRequired,
-    serialportMenuOpen: PropTypes.bool.isRequired
+    serialportMenuOpen: PropTypes.bool.isRequired,
+    deviceType: PropTypes.string.isRequired // Add deviceType to propTypes
 };
 
 export default HardwareConsoleComponent;

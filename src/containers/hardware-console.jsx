@@ -190,8 +190,8 @@ class HardwareConsole extends React.Component {
         }
     }
 
-    handleClickSend () {
-        let data = this.state.dataToSend;
+    handleClickSend (data) {
+       // let data = this.state.dataToSend;
         if (this.props.eol === 'lf') {
             data = `${data}\n`;
         } else if (this.props.eol === 'cr'){
@@ -201,6 +201,7 @@ class HardwareConsole extends React.Component {
 
             data = `${data}\r\n`;
         }
+         
         this.writeToPeripheral(data);
     }
 

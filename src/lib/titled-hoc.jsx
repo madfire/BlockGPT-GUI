@@ -13,7 +13,7 @@ const messages = defineMessages({
     defaultProjectTitle: {
         id: 'gui.gui.defaultProjectTitle',
         description: 'Default title for project',
-        defaultMessage: 'OpenBlock Project'
+        defaultMessage: 'BlockGPT Project'
     }
 });
 

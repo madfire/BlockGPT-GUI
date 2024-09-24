@@ -77,7 +77,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
             this.fileReader.onload = this.onload;
             // create <input> element and add it to DOM
             this.inputElement = document.createElement('input');
-            this.inputElement.accept = '.ob,.sb,.sb2,.sb3';
+            this.inputElement.accept = '.bp3,.sb,.sb2,.sb3';
             this.inputElement.style = 'display: none;';
             this.inputElement.type = 'file';
             this.inputElement.onchange = this.handleChange; // connects to step 3
@@ -138,7 +138,7 @@ const SBFileUploaderHOC = function (WrappedComponent) {
             if (!fileInputFilename) return '';
             // only parse title with valid scratch project extensions
             // (.ob .sb, .sb2, and .sb3)
-            const matches = fileInputFilename.match(/^(.*)\.((ob)|(sb[23]))?$/);
+            const matches = fileInputFilename.match(/^(.*)\.((bg3)|(sb[23]))?$/);
             if (!matches) return '';
             return matches[1].substring(0, 100); // truncate project title to max 100 chars
         }
