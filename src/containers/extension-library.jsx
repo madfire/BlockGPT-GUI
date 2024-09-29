@@ -54,7 +54,27 @@ const messages = defineMessages({
         id: 'gui.library.otherTag',
         defaultMessage: 'Other',
         description: 'Other tag to filter all other libraries.'
+    },
+    // add aitag
+    aiTag: {
+        id: 'gui.library.aiTag',
+        defaultMessage: 'AI',
+        description: 'AI tag to filter all AI libraries.'
+    },
+    // add default tag
+    defaultTag: {
+        id: 'gui.library.defaultTag',
+        defaultMessage: 'Default',
+        description: 'Default tag to filter all default libraries.'
+    },
+    // add hardware tag
+    hardwareTag: {
+        id: 'gui.library.hardwareTag',
+        defaultMessage: 'Hardware',
+        description: 'Hardware tag to filter all hardware libraries.'
     }
+
+        
 });
 
 const SHIELD_TAG = {tag: 'shield', intlLabel: messages.shieldTag};
@@ -63,8 +83,14 @@ const SENSOR_TAG = {tag: 'sensor', intlLabel: messages.sensorTag};
 const DISPLAY_TAG = {tag: 'display', intlLabel: messages.displayTag};
 const COMMUNICATION_TAG = {tag: 'communication', intlLabel: messages.communicationTag};
 const OTHER_TAG = {tag: 'other', intlLabel: messages.otherTag};
+// add ai tag
+const AI_TAG = {tag: 'ai', intlLabel: messages.aiTag};
+// add default tag 
+const DEFAULT_TAG = {tag: 'default', intlLabel: messages.defaultTag};
+// add hardware tag
+const HARDWARE_TAG = {tag: 'hardware', intlLabel: messages.hardwareTag};
 const tagListPrefix = [SHIELD_TAG, ACTUATOR_TAG, SENSOR_TAG, DISPLAY_TAG, COMMUNICATION_TAG, OTHER_TAG];
-
+const tageListRealtime = [DEFAULT_TAG, AI_TAG, HARDWARE_TAG, OTHER_TAG];
 class ExtensionLibrary extends React.PureComponent {
     constructor (props) {
         super(props);
@@ -179,7 +205,7 @@ class ExtensionLibrary extends React.PureComponent {
                 autoClose={false}
                 data={extensionLibraryThumbnailData}
                 filterable
-                tags={this.props.isRealtimeMode ? [] : tagListPrefix}
+                tags={this.props.isRealtimeMode ? tageListRealtime : tagListPrefix}
                 id="extensionLibrary"
                 isUnloadble
                 title={this.props.intl.formatMessage(messages.extensionTitle)}
