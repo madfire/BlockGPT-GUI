@@ -183,8 +183,8 @@ export default [
         insetIconURL: tm2scratchInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage='基于TM的图像或声音识别。'
-                description='画像や音声を学習させよう。'
+                defaultMessage='Recognize your own images and sounds.'
+                description='Recognize your own images and sounds.'
                 id='gui.extension.tm2scratchblocks.description'
             />
         ),
@@ -222,7 +222,7 @@ export default [
         insetIconURL: tmpose2scratchInsetIconURL,
         description: (
             <FormattedMessage
-                defaultMessage='基于TM的姿势识别。'
+                defaultMessage='Recognize your own poses.'
                 description='Recognize your own poses.'
                 id='gui.extension.tmpose2scratchblocks.description'
             />
