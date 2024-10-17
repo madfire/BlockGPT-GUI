@@ -66,7 +66,7 @@ class Hardware extends React.Component {
             <HardwareComponent
                 codeEditorLanguage={codeEditorLanguage}
                 codeEditorOptions={this.props.isCodeEditorLocked ? {readOnly: true} : {readOnly: false}}
-                codeEditorTheme={this.props.isCodeEditorLocked ? 'readOnlyTheme' : 'vs'}
+                codeEditorTheme={this.props.isCodeEditorLocked ? 'readOnlyTheme' : 'vs-dark'}
                 codeEditorValue={this.props.codeEditorValue}
                 isCodeEditorLocked={this.props.isCodeEditorLocked}
                 onCodeEditorWillMount={this.handleCodeEditorWillMount}
