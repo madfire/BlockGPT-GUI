@@ -57,9 +57,13 @@ import makeymakeyConnectionSmallIconURL from './makeymakey/makeymakey-small.svg'
 
 
 // add ecool device 2024-09-06 by Ran
-import ecoolIconURL from './ecool/ecool.png';
-import ecoolConnectionIconURL from './ecool/ecool-illustration.svg';
-import ecoolConnectionSmallIconURL from './ecool/ecool-small.svg';
+// import ecoolIconURL from './ecool/ecool.png';
+// import ecoolConnectionIconURL from './ecool/ecool-illustration.svg';
+// import ecoolConnectionSmallIconURL from './ecool/ecool-small.svg';
+import ecoolIconURL from './ecool/k210.png';
+import ecoolConnectionIconURL from './ecool/k210-2.svg';
+import ecoolConnectionSmallIconURL from './ecool/k210-s.svg';
+
 
 const deviceData = [
     /**
@@ -522,15 +526,15 @@ const deviceData = [
     },
 
     {
-        name: 'Ecool',
+        name: 'K210',
         deviceId: 'ecool',
-        manufactor: 'Edutech',
+        manufactor: 'yahboom',
         //learnMore: 'https://makeymakey.com/',
         type: DeviceType.microPython,
         iconURL:ecoolIconURL,
         description: (
             <FormattedMessage
-                defaultMessage="A K210 device with ESP32."
+                defaultMessage="A K210 module with 200 million pixels camera and 2.0-inch screen."
                 description="Description for the Ecool device"
                 id="gui.device.ecool.description"
             />
