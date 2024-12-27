@@ -61,7 +61,7 @@ import makeymakeyConnectionSmallIconURL from './makeymakey/makeymakey-small.svg'
 // import ecoolConnectionIconURL from './ecool/ecool-illustration.svg';
 // import ecoolConnectionSmallIconURL from './ecool/ecool-small.svg';
 import ecoolIconURL from './ecool/k210.png';
-import ecoolConnectionIconURL from './ecool/k210-2.svg';
+import ecoolConnectionIconURL from './ecool/k210.svg';
 import ecoolConnectionSmallIconURL from './ecool/k210-s.svg';
 
 
