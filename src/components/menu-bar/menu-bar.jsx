@@ -104,7 +104,7 @@ import unconnectedIcon from './icon--unconnected.svg';
 import connectedIcon from './icon--connected.svg';
 
 // add gpticon
-import gptIcon from './Chatgpt.svg';
+// import gptIcon from './Chatgpt.svg';
 
 import screenshotIcon from './icon--screenshot.svg';
 import settingIcon from './icon--setting.svg';
@@ -119,11 +119,11 @@ const ariaMessages = defineMessages({
         defaultMessage: 'language selector',
         description: 'accessibility text for the language selection menu'
     },
-    gpt: {
-        id:'gui.menuBar.gpt',
-        defaultMessage:'BlockGPT',  
-        description:'Accessibility text for the GPT chat button'
-    },
+    // gpt: {
+    //     id:'gui.menuBar.gpt',
+    //     defaultMessage:'BlockGPT',  
+    //     description:'Accessibility text for the GPT chat button'
+    // },
     tutorials: {
         id: 'gui.menuBar.tutorialsLibrary',
         defaultMessage: 'Tutorials',
@@ -839,7 +839,7 @@ class MenuBar extends React.Component {
                         />
                         {this.state.isOverflow ? null : <FormattedMessage {...ariaMessages.wiki} />}
                     </div> */}
-                    <div
+                    {/* <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.gpt)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
                         onClick={this.props.onOpenGptChat}
@@ -850,7 +850,7 @@ class MenuBar extends React.Component {
                             alt="BlockGPT"
                         />
                         {this.state.isOverflow ? null : <FormattedMessage {...ariaMessages.gpt} />}
-                    </div>
+                    </div> */}
                     <div
                         aria-label={this.props.intl.formatMessage(ariaMessages.tutorials)}
                         className={classNames(styles.menuBarItem, styles.hoverable)}
