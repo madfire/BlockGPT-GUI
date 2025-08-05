@@ -11,6 +11,7 @@ const BlockGPT = () => {
   const dragRef = useRef(null);
   const offset = useRef({ x: 0, y: 0 });
   const dragging = useRef(false);
+  const responseRef = useRef(null);
 
   const handleToggle = () => setOpen(!open);
 
@@ -35,7 +36,8 @@ const BlockGPT = () => {
       });
       const data = await res.json();
       const content = data?.choices?.[0]?.message?.content || '无有效返回';
-      setResponse(content);
+      setResponse(prev => `${prev}\n\n${content}`);
+      setPrompt('');
     } catch (err) {
       setResponse('请求失败，请检查网络或接口。');
     } finally {
@@ -78,6 +80,17 @@ const BlockGPT = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (window.renderMathInElement && responseRef.current) {
+      window.renderMathInElement(responseRef.current, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
+        ]
+      });
+    }
+  }, [response]);
+
   return (
     <div
       style={{
@@ -89,45 +102,123 @@ const BlockGPT = () => {
       }}
     >
       <div style={{ pointerEvents: 'auto' }}>
-        <div ref={dragRef} onMouseDown={handleMouseDown} className="cursor-move">
+        <div
+          ref={dragRef}
+          onMouseDown={handleMouseDown}
+          style={{ cursor: 'move' }}
+        >
           <button
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 text-white flex items-center justify-center shadow-xl hover:brightness-110"
             onClick={handleToggle}
+            style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              background: 'linear-gradient(to bottom right, #3B82F6, #06B6D4)',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              border: 'none',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
           >
             <BotMessageSquare size={26} />
           </button>
         </div>
 
         {open && (
-          <div className="fixed bottom-[130px] right-4 w-[360px] h-[480px] bg-white border border-blue-600 rounded-xl shadow-2xl flex flex-col overflow-hidden">
-            <div className="flex items-center px-4 py-2 border-b border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100">
-              <span className="font-semibold text-blue-700 text-sm">BlockGPT 助手</span>
+          <div
+            style={{
+              position: 'fixed',
+              bottom: '130px',
+              right: '16px',
+              width: '360px',
+              height: '480px',
+              backgroundColor: '#f3f4f6',
+              border: '1px solid #3B82F6',
+              borderRadius: '12px',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
+            }}
+          >
+            <div
+              style={{
+                padding: '8px 16px',
+                background: 'linear-gradient(to right, #EFF6FF, #DBEAFE)',
+                borderBottom: '1px solid #BFDBFE',
+                fontWeight: '600',
+                fontSize: '14px',
+                color: '#1E40AF'
+              }}
+            >
+              BlockGPT 助手
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-3 text-sm text-gray-800 whitespace-pre-wrap bg-blue-50">
-              <div className="p-2 rounded-md bg-white shadow-inner border border-blue-100">
-                {response || '👋 请输入你想要生成的内容'}
-              </div>
-            </div>
+            <div
+              ref={responseRef}
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '12px',
+                fontSize: '14px',
+                color: '#1F2937',
+                backgroundColor: '#ffffff'
+              }}
+              dangerouslySetInnerHTML={{ __html: window.marked?.parse(response || '👋 请输入你想要生成的内容') || '' }}
+            />
 
-            <div className="p-3 border-t border-blue-200 bg-white">
+            <div
+              style={{
+                padding: '12px',
+                borderTop: '1px solid #BFDBFE',
+                backgroundColor: '#ffffff'
+              }}
+            >
               <textarea
                 rows={3}
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="请输入提示词..."
-                className="w-full resize-none text-sm p-2 rounded-md border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                style={{
+                  width: '100%',
+                  resize: 'none',
+                  fontSize: '14px',
+                  padding: '8px',
+                  borderRadius: '6px',
+                  border: '1px solid #93C5FD',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
               />
-              <div className="flex justify-between mt-2">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
                 <button
                   onClick={handleToggle}
-                  className="text-gray-500 text-sm hover:underline"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#6B7280',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }}
                 >
                   收起
                 </button>
                 <button
                   onClick={handleSend}
-                  className="bg-blue-600 text-white px-4 py-1 rounded-md text-sm hover:bg-blue-700"
+                  style={{
+                    backgroundColor: '#2563EB',
+                    color: '#fff',
+                    padding: '4px 16px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
                 >
                   {loading ? '生成中…' : '发送'}
                 </button>
