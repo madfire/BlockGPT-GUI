@@ -5,20 +5,26 @@ import { BotMessageSquare } from 'lucide-react';
 const BlockGPT = () => {
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [position, setPosition] = useState({ bottom: 80, right: 20 });
   const dragRef = useRef(null);
   const offset = useRef({ x: 0, y: 0 });
   const dragging = useRef(false);
   const responseRef = useRef(null);
+  const [messages, setMessages] = useState([
+    { role: 'system', content: 'You are a helpful assistant.' }
+  ]);
+  const [responseHtml, setResponseHtml] = useState('');
 
   const handleToggle = () => setOpen(!open);
 
   const handleSend = async () => {
-    if (!prompt) return;
+    if (!prompt.trim()) return;
     setLoading(true);
-    setResponse('');
+    const newMessages = [...messages, { role: 'user', content: prompt }];
+    setMessages(newMessages);
+    setPrompt('');
+
     try {
       const res = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
         method: 'POST',
@@ -28,18 +34,28 @@ const BlockGPT = () => {
         },
         body: JSON.stringify({
           model: 'qwen-plus',
-          messages: [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            { role: 'user', content: prompt }
-          ]
+          messages: newMessages
         })
       });
+
       const data = await res.json();
       const content = data?.choices?.[0]?.message?.content || '无有效返回';
-      setResponse(prev => `${prev}\n\n${content}`);
-      setPrompt('');
+      const updatedMessages = [...newMessages, { role: 'assistant', content }];
+      setMessages(updatedMessages);
+
+      const formatted = updatedMessages
+        .filter(m => m.role !== 'system')
+        .map(m => {
+          const isUser = m.role === 'user';
+          const style = isUser
+            ? 'margin-bottom:4px;'
+            : 'background-color:#EFF6FF;padding:6px 8px;border-radius:6px;margin-bottom:6px;';
+          return `<div style="${style}"><strong>${isUser ? '你：' : '助手：'}</strong><br/>${window.marked?.parse(m.content)}</div>`;
+        })
+        .join('');
+      setResponseHtml(formatted);
     } catch (err) {
-      setResponse('请求失败，请检查网络或接口。');
+      setResponseHtml('<div style="color:red;">请求失败，请检查网络或接口。</div>');
     } finally {
       setLoading(false);
     }
@@ -47,24 +63,18 @@ const BlockGPT = () => {
 
   const handleMouseDown = (e) => {
     dragging.current = true;
-    offset.current = {
-      x: e.clientX,
-      y: e.clientY,
-    };
+    offset.current = { x: e.clientX, y: e.clientY };
   };
 
   const handleMouseMove = (e) => {
     if (!dragging.current) return;
     const dx = e.clientX - offset.current.x;
     const dy = e.clientY - offset.current.y;
-    setPosition((prev) => ({
+    setPosition(prev => ({
       bottom: Math.max(0, prev.bottom - dy),
       right: Math.max(0, prev.right - dx),
     }));
-    offset.current = {
-      x: e.clientX,
-      y: e.clientY,
-    };
+    offset.current = { x: e.clientX, y: e.clientY };
   };
 
   const handleMouseUp = () => {
@@ -89,7 +99,7 @@ const BlockGPT = () => {
         ]
       });
     }
-  }, [response]);
+  }, [responseHtml]);
 
   return (
     <div
@@ -163,12 +173,12 @@ const BlockGPT = () => {
               style={{
                 flex: 1,
                 overflowY: 'auto',
-                padding: '12px',
+                padding: '10px',
                 fontSize: '14px',
                 color: '#1F2937',
                 backgroundColor: '#ffffff'
               }}
-              dangerouslySetInnerHTML={{ __html: window.marked?.parse(response || '👋 请输入你想要生成的内容') || '' }}
+              dangerouslySetInnerHTML={{ __html: responseHtml }}
             />
 
             <div
