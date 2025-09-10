@@ -155,4 +155,22 @@ export default appTarget => {
                 onShowMessageBox={handleShowMessageBox}
             />,
         appTarget);
+    
+    // ✅ 添加监听代码（必须在 GUI 渲染之后）
+    window.addEventListener('message', (event) => {
+        const { type, payload } = event.data || {};
+        if (type === 'inject-block') {
+            try {
+                const dom = Blockly.Xml.textToDom(payload);
+                const workspace = Blockly.getMainWorkspace();
+               // workspace.clear();
+                Blockly.Xml.domToWorkspace(dom, workspace);
+                console.log('[BlockGPT] ✅ 积木已注入成功');
+            } catch (err) {
+                console.error('[BlockGPT] ❌ 注入失败', err);
+            }
+        }
+    });
 };
+
+

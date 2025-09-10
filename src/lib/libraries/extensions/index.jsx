@@ -41,6 +41,9 @@ import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
 import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
+import microbitIconURL from './microbit/microbit.png';
+import microbitInsetIconURL from './microbit/microbit-small.svg';
+import microbitConnectionIconURL from './microbit/microbit-illustration.svg';
 // Add AI extension icon URLs
 import facemesh2scratchIconURL from './scratch3_facemesh2scratch/facemesh2scratch.png';
 import facemesh2scratchInsetIconURL from './scratch3_facemesh2scratch/facemesh2scratch-small.png';
@@ -60,9 +63,39 @@ import tm2scratchInsetIconURL from './scratch3_tm2scratch/tm2scratch-small.png';
 import tmpose2scratchIconURL from './scratch3_tmpose2scratch/tmpose2scratch.png';
 import tmpose2scratchInsetIconURL from './scratch3_tmpose2scratch/tmpose2scratch-small.png';
 
+import chatgpt2scratchIconURL from './scratch3_gpt2scratch/chatgpt2scratch.png';
+import chatgpt2scratchInsetIconURL from './scratch3_gpt2scratch/chatgpt2scratch-small.png';
 
 
 export default [
+    //chatgpt
+    {
+        name: 'GPT2Scratch',
+        extensionId: 'gpt2scratch',
+        collaborator: 'ichiroc & Ran',
+        iconURL: chatgpt2scratchIconURL,
+        insetIconURL: chatgpt2scratchInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage='ChatGPT2Scratch Blocks'
+                description='ChatGPT2Scratch Blocks.'
+                id='gui.extension.chatgpt2scratchblocks.description'
+            />
+        ),
+        featured: true,
+        disabled: false,
+        internetConnectionRequired: true,
+        bluetoothRequired: false,
+        translationMap: {
+            'en': {
+                'gui.extension.chatgpt2scratchblocks.description': 'GPT for Scratch'
+            },
+            'zh-cn': {
+                'gui.extension.chatgpt2scratchblocks.description': 'GPT对话'
+            }
+        },
+        tags: ['ai']
+    },
     // facemesh2scratch
     {
         name: 'Facemesh2Scratch',
@@ -505,6 +538,36 @@ export default [
             />
         ),
         helpLink: 'https://scratch.mit.edu/vernier',
+        tags:['default','hardware']
+    },
+    {
+        name: 'micro:bit',
+        extensionId: 'microbit',
+        collaborator: 'micro:bit Educational Foundation',
+        iconURL: microbitIconURL,
+        insetIconURL: microbitInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Create with the BBC micro:bit."
+                description="Description for the 'micro:bit' extension"
+                id="gui.extension.microbit.description"
+            />
+        ),
+        featured: true,
+        disabled: false,
+        bluetoothRequired: true,
+        internetConnectionRequired: true,
+        launchPeripheralConnectionFlow: true,
+        useAutoScan: false,
+        connectionIconURL: microbitConnectionIconURL,
+        connectingMessage: (
+            <FormattedMessage
+                defaultMessage="Connecting"
+                description="Message to help people connect to their micro:bit."
+                id="gui.extension.microbit.connectingMessage"
+            />
+        ),
+        helpLink: 'https://scratch.mit.edu/microbit',
         tags:['default','hardware']
     }
 ];
